@@ -11,6 +11,8 @@ function App() {
     role: "",
   });
 
+  // useEffect(() => {});
+
   const getFamily = () => {
     fetch("/api")
       .then((response) => response.json())
