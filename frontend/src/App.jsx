@@ -23,7 +23,7 @@ function App() {
   };
 
   const addFamilyMember = () => {
-    fetch("/api/addFamilyMember", {
+    fetch("/api", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

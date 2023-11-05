@@ -20,12 +20,12 @@ const client = new Client({
 
 client.connect();
 
-app.get("/api", async (_request, response) => {
+app.get("/api", async (request, response) => {
   const { rows } = await client.query("SELECT * FROM family_tree");
   response.send(rows);
 });
 
-app.post("/api/addFamilyMember", (request, response) => {
+app.post("/api", async (request, response) => {
   const { name, age, role } = request.body;
   const postgres =
     "INSERT INTO family_tree (name, age, role) VALUES ($1, $2, $3)";
@@ -33,10 +33,7 @@ app.post("/api/addFamilyMember", (request, response) => {
 
   pool.query(postgres, values, (error, result) => {
     if (error) {
-      console.error(
-        "Det uppstod ett fel när familjemedlemmen skulle registreras: ",
-        error
-      );
+      console.error("Följande gick fel: ", error);
       response
         .status(500)
         .send("Det uppstod ett fel när familjemedlemmen skulle registreras.");
