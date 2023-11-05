@@ -8,9 +8,9 @@ const dotenv = require("dotenv"),
 
 dotenv.config();
 
-const { Postgrespool } = require("pg");
+const { Pool } = require("pg");
 
-const postgresPool = new Postgrespool({
+const pool = new Pool({
   connectionString: process.env.PGURI,
 });
 
@@ -31,20 +31,20 @@ app.post("/api/addFamilyMember", (request, response) => {
     "INSERT INTO family_tree (name, age, role) VALUES ($1, $2, $3)";
   const values = [name, age, role];
 
-  postgresPool.query(postgres, values, (error, result) => {
-    if (error) {
-      console.error(
-        "Det uppstod ett fel när familjemedlemmen skulle registreras: ",
-        error
-      );
-      response
-        .status(500)
-        .send("Det uppstod ett fel när familjemedlemmen skulle registreras.");
-    } else {
-      console.log("Familjemedlemmen är tillagd :) ");
-      response.status(201).send("Familjemedlemmen är tillagd :) ");
-    }
-  });
+  // pool.query(postgres, values, (error, result) => {
+  //   if (error) {
+  //     console.error(
+  //       "Det uppstod ett fel när familjemedlemmen skulle registreras: ",
+  //       error
+  //     );
+  //     response
+  //       .status(500)
+  //       .send("Det uppstod ett fel när familjemedlemmen skulle registreras.");
+  //   } else {
+  //     console.log("Familjemedlemmen är tillagd :) ");
+  //     response.status(201).send("Familjemedlemmen är tillagd :) ");
+  //   }
+  // });
 });
 
 app.use(express.static(path.join(path.resolve(), "dist")));
