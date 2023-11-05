@@ -1,39 +1,106 @@
-import { useState, useEffect } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import React from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [newFamilyMember, setNewFamilyMember] = useState({
+    name: "",
+    age: 0,
+    role: "",
+  });
 
-  useEffect(() => {
+  const getFamily = () => {
     fetch("/api")
       .then((response) => response.json())
       .then((result) => {
-        alert(`Hello ${result.hello}!`);
+        console.log("Familjen är hämtad = ", result);
+        setData(result);
       });
-  }, []);
+  };
+
+  const addFamilyMember = () => {
+    fetch("/api/addFamilyMember", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+
+      body: JSON.stringify(newFamilyMember),
+    })
+      .then((response) => response.json())
+      .then(() => {
+        console.log(newFamilyMember);
+        getFamily();
+        setNewFamilyMember({ name: "", age: 0, role: "" });
+      });
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel="noreferrer">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div className="main">
+        <div className="container">
+          <div>
+            <h1>Familjeträdet!</h1>
+          </div>
+          <div>
+            <input type="button" onClick={getFamily} value="Hämta familjen" />
+          </div>
+          {isLoading ? (
+            <p>Laddar data...</p>
+          ) : (
+            <div>
+              <ul>
+                {data.map((familyMember) => (
+                  <li key={familyMember.id}>
+                    Namn: {familyMember.name}, Ålder: {familyMember.age},
+                    Familjeroll: {familyMember.role}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+        <div className="container">
+          <div>
+            <h1>Lägg till en ny familjemedlem</h1>
+          </div>
+          <div className="container">
+            <input
+              type="text"
+              placeholder="Namn"
+              value={newFamilyMember.name}
+              onChange={(e) =>
+                setNewFamilyMember({ ...newFamilyMember, name: e.target.value })
+              }
+            />
+            <input
+              type="text"
+              placeholder="Ålder"
+              value={newFamilyMember.age}
+              onChange={(e) =>
+                setNewFamilyMember({ ...newFamilyMember, age: e.target.value })
+              }
+            />
+            <input
+              type="text"
+              placeholder="Familjeroll"
+              value={newFamilyMember.role}
+              onChange={(e) =>
+                setNewFamilyMember({ ...newFamilyMember, role: e.target.value })
+              }
+            />
+            <div>
+              <input
+                type="button"
+                onClick={addFamilyMember}
+                value="Lägg till"
+              />
+            </div>
+          </div>
+        </div>
       </div>
-      <h1>Fullstackish</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          Räknare: {count}
-        </button>
-        <p>Tata bebe</p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   );
 }
