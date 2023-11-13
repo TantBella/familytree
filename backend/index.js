@@ -47,5 +47,6 @@ app.post("/api", async (request, response) => {
 app.use(express.static(path.join(path.resolve(), "dist")));
 
 app.listen(3000, () => {
+console.log("TEST HEJ");	
   console.log("Redo på http://localhost:3000/");
 });
